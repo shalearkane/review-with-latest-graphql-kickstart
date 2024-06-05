@@ -8,10 +8,7 @@ import com.chegg.federation.review.query.ProductService;
 import com.chegg.federation.review.query.ReviewQuery;
 import com.chegg.federation.review.query.UserService;
 import graphql.introspection.Introspection;
-import graphql.schema.GraphQLArgument;
-import graphql.schema.GraphQLDirective;
-import graphql.schema.GraphQLScalarType;
-import graphql.schema.GraphQLSchema;
+import graphql.schema.*;
 import graphql.schema.idl.SchemaPrinter;
 import io.leangen.graphql.GraphQLSchemaGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,31 @@ public class GraphQLConfig {
     @Autowired
     private ReviewQuery reviewQuery;
 
+    private static final String MAPPED_TYPE = "_mappedType";
+    private static final String TYPE = "type";
+    private static final GraphQLScalarType UNREPRESENTABLE = GraphQLScalarType.newScalar()
+            .name("UNREPRESENTABLE")
+            .description("Use SPQR's SchemaPrinter to remove this from SDL")
+            .coercing(new Coercing<Object, String>() {
+                private static final String ERROR = "Type not intended for use";
+
+                @Override
+                public String serialize(Object dataFetcherResult) {
+                    return "__internal__";
+                }
+
+                @Override
+                public Object parseValue(Object input) {
+                    throw new CoercingParseValueException(ERROR);
+                }
+
+                @Override
+                public Object parseLiteral(Object input) {
+                    throw new CoercingParseLiteralException(ERROR);
+                }
+            })
+            .build();
+
     @Bean
     public GraphQLSchema customSchema() {
 
@@ -42,9 +64,6 @@ public class GraphQLConfig {
                 .withBasePackages("com.chegg.federation.poc.review")
                .withOperationsFromSingletons(reviewQuery)
                 .generate();
-
-        // UNREPRESENTABLE scalar
-        GraphQLScalarType unrepresentableScalar = (GraphQLScalarType) schema.getType("UNREPRESENTABLE");
 
         // _mappedType directive definition
         GraphQLDirective mappedTypeDirective = GraphQLDirective.newDirective()
@@ -54,7 +73,7 @@ public class GraphQLConfig {
                 .argument(GraphQLArgument.newArgument()
                         .name("type")
                         .description("")
-                        .type(unrepresentableScalar)
+                        .type(UNREPRESENTABLE)
                         .build()
                 )
                 .build();
@@ -67,7 +86,7 @@ public class GraphQLConfig {
                 .argument(GraphQLArgument.newArgument()
                         .name("operation")
                         .description("")
-                        .type(unrepresentableScalar)
+                        .type(UNREPRESENTABLE)
                         .build()
                 )
                 .build();
@@ -80,7 +99,7 @@ public class GraphQLConfig {
                 .argument(GraphQLArgument.newArgument()
                         .name("inputField")
                         .description("")
-                        .type(unrepresentableScalar)
+                        .type(UNREPRESENTABLE)
                         .build()
                 )
                 .build();

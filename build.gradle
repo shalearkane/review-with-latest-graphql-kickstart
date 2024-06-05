@@ -1,25 +1,35 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.2.1'
+    id 'io.spring.dependency-management' version '1.1.5'
 }
 
-group 'com.chegg'
-version '1.0-SNAPSHOT'
+group = 'com.chegg'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+
 
 repositories {
     mavenCentral()
-    jcenter()
-    //maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compile 'io.leangen.graphql:spqr:0.10.1'
-    //implementation 'com.github.leangen:graphql-spqr:86ce7d4'
-    implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:6.0.1'
-    implementation 'com.graphql-java-kickstart:graphiql-spring-boot-starter:6.0.1'
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
 
-    implementation 'com.apollographql.federation:federation-graphql-java-support:0.3.2'
-    //implementation fileTree(include: ['federation-graphql-java-support-0.5.1-SNAPSHOT-jar-with-dependencies.jar'], dir: '/Users/ankit.j/chegg/federation-jvm-master/graphql-java-support/target')
+    implementation 'io.leangen.graphql:spqr:0.12.4'
+    implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:15.1.0'
+
+    implementation 'com.apollographql.federation:federation-graphql-java-support:4.5.0'
 
 
+    implementation "org.projectlombok:lombok"
+    annotationProcessor "org.projectlombok:lombok"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
