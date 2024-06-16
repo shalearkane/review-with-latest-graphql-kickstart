@@ -14,6 +14,7 @@ java {
 
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -21,7 +22,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.springframework.boot:spring-boot-starter-actuator"
 
-    implementation 'io.leangen.graphql:spqr:0.12.4'
+    implementation 'io.leangen.graphql:spqr:0.12.6'
     implementation 'com.graphql-java-kickstart:graphql-spring-boot-starter:15.1.0'
 
     implementation 'com.apollographql.federation:federation-graphql-java-support:4.5.0'
